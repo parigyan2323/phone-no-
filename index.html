@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,39 +22,47 @@
         }
     </style>
 </head>
-<body>
+<body><h2>Enter Phone Numbers (Any Format, One per Line)</h2>
+<textarea id="phoneNumbers" placeholder="Enter phone numbers here..."></textarea>
+<br>
+<button onclick="openLinks()">Open Links</button>
 
-    <h2>Enter Phone Numbers (Any Format, One per Line)</h2>
-    <textarea id="phoneNumbers" placeholder="Enter phone numbers here..."></textarea>
-    <br>
-    <button onclick="openLinks()">Open Links</button>
+<script>
+    function cleanNumber(num) {
+        // Remove all non-digit characters
+        num = num.replace(/\D/g, '');
+        
+        // Check if it's in an international format and extract the last 10 digits
+        if (num.length > 10) {
+            num = num.slice(-10);
+        }
 
-    <script>
-        function cleanNumber(num) {
-            // Remove all non-digit characters
-            num = num.replace(/\D/g, '');
-            
-            // Extract last 10 digits if it's in international format
-            if (num.length > 10) {
-                num = num.slice(-10);
+        return num.length === 10 ? num : null;
+    }
+
+    function openLinks() {
+        let input = document.getElementById("phoneNumbers").value;
+        let rawNumbers = input.split("\n").map(num => num.trim());
+        let validNumbers = [];
+
+        rawNumbers.forEach(num => {
+            let cleaned = cleanNumber(num);
+            if (cleaned) {
+                validNumbers.push(cleaned);
             }
+        });
 
-            return num.length === 10 ? num : null;
+        if (validNumbers.length === 0) {
+            alert("Please enter valid phone numbers.");
+            return;
         }
 
-        function openLinks() {
-            let input = document.getElementById("phoneNumbers").value;
-            let rawNumbers = input.split("\n").map(num => num.trim());
-
-            rawNumbers.forEach(num => {
-                let cleaned = cleanNumber(num);
-                if (cleaned) {
-                    let url = `https://waibot.xyz/mixx.php?number=${cleaned}`;
-                    window.open(url, '_blank');
-                }
-            });
-        }
-    </script>
+        validNumbers.forEach(number => {
+            let url = `https://waibot.xyz/mixx.php?number=${number}`;
+            window.open(url, '_blank');
+        });
+    }
+</script>
 
 </body>
 </html>

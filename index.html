@@ -25,22 +25,42 @@
 </head>
 <body>
 
-    <h2>Enter Phone Numbers (One per Line)</h2>
+    <h2>Enter Phone Numbers (Any Format, One per Line)</h2>
     <textarea id="phoneNumbers" placeholder="Enter phone numbers here..."></textarea>
     <br>
     <button onclick="openLinks()">Open Links</button>
 
     <script>
+        function cleanNumber(num) {
+            // Remove all non-digit characters
+            num = num.replace(/\D/g, '');
+            
+            // Check if it's in an international format and extract the last 10 digits
+            if (num.length > 10) {
+                num = num.slice(-10);
+            }
+
+            return num.length === 10 ? num : null;
+        }
+
         function openLinks() {
             let input = document.getElementById("phoneNumbers").value;
-            let numbers = input.split("\n").map(num => num.trim()).filter(num => num.length === 10 && !isNaN(num));
+            let rawNumbers = input.split("\n").map(num => num.trim());
+            let validNumbers = [];
 
-            if (numbers.length === 0) {
-                alert("Please enter valid 10-digit phone numbers.");
+            rawNumbers.forEach(num => {
+                let cleaned = cleanNumber(num);
+                if (cleaned) {
+                    validNumbers.push(cleaned);
+                }
+            });
+
+            if (validNumbers.length === 0) {
+                alert("Please enter valid phone numbers.");
                 return;
             }
 
-            numbers.forEach(number => {
+            validNumbers.forEach(number => {
                 let url = `https://waibot.xyz/mixx.php?number=${number}`;
                 window.open(url, '_blank');
             });

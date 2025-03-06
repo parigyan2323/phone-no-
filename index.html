@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,6 +14,7 @@
             width: 80%;
             height: 150px;
             font-size: 16px;
+            padding: 10px;
         }
         button {
             margin-top: 10px;
@@ -22,47 +24,54 @@
         }
     </style>
 </head>
-<body><h2>Enter Phone Numbers (Any Format, One per Line)</h2>
-<textarea id="phoneNumbers" placeholder="Enter phone numbers here..."></textarea>
-<br>
-<button onclick="openLinks()">Open Links</button>
+<body>
 
-<script>
-    function cleanNumber(num) {
-        // Remove all non-digit characters
-        num = num.replace(/\D/g, '');
-        
-        // Check if it's in an international format and extract the last 10 digits
-        if (num.length > 10) {
-            num = num.slice(-10);
-        }
+    <h2>Enter Phone Numbers (Any Format, One per Line)</h2>
+    <textarea id="phoneNumbers" placeholder="Enter phone numbers here..."></textarea>
+    <br>
+    <button onclick="openLinks()">Open Links</button>
 
-        return num.length === 10 ? num : null;
-    }
-
-    function openLinks() {
-        let input = document.getElementById("phoneNumbers").value;
-        let rawNumbers = input.split("\n").map(num => num.trim());
-        let validNumbers = [];
-
-        rawNumbers.forEach(num => {
-            let cleaned = cleanNumber(num);
-            if (cleaned) {
-                validNumbers.push(cleaned);
+    <script>
+        function cleanNumber(num) {
+            // Remove all non-digit characters
+            num = num.replace(/\D/g, '');
+            
+            // Extract the last 10 digits if it's an international number
+            if (num.length > 10) {
+                num = num.slice(-10);
             }
-        });
 
-        if (validNumbers.length === 0) {
-            alert("Please enter valid phone numbers.");
-            return;
+            // Ensure it's a valid 10-digit phone number
+            return num.length === 10 ? num : null;
         }
 
-        validNumbers.forEach(number => {
-            let url = `https://waibot.xyz/mixx.php?number=${number}`;
-            window.open(url, '_blank');
-        });
-    }
-</script>
+        function openLinks() {
+            let input = document.getElementById("phoneNumbers").value;
+            let rawNumbers = input.split("\n").map(num => num.trim());
+            let validNumbers = [];
+
+            rawNumbers.forEach(num => {
+                let cleaned = cleanNumber(num);
+                if (cleaned) {
+                    validNumbers.push(cleaned);
+                }
+            });
+
+            if (validNumbers.length === 0) {
+                alert("Please enter valid phone numbers.");
+                return;
+            }
+
+            let delay = 500; // 500 milliseconds (0.5 sec) delay to avoid popup blocking
+
+            validNumbers.forEach((number, index) => {
+                setTimeout(() => {
+                    let url = `https://waibot.xyz/mixx.php?number=${number}`;
+                    window.open(url, '_blank');
+                }, index * delay); // Staggered delay to prevent popup blocking
+            });
+        }
+    </script>
 
 </body>
 </html>
